@@ -101,4 +101,34 @@ if uploaded_file:
         model="llama-3.1-8b-instant",
         messages=[
             {
-                "role
+                "role": "system",
+                "content": "You are an AI inventory benchmarking and supply chain expert."
+            },
+            {
+                "role": "user",
+                "content": f"
+Compare inventory performance between these companies:
+{df_compare.to_string()}
+
+Identify stockout risk, restock efficiency,
+and give strategic recommendations.
+"""
+            }
+        ]
+    )
+
+    st.write(response.choices[0].message.content)
+
+    # AI Chat
+    st.subheader("🗣️ Ask ReStockerAI (Comparison Mode)")
+    user_query = st.text_input("Tanyakan analisis perbandingan:")
+
+    if user_query:
+        chat_resp = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": "You are an AI inventory comparison assistant."},
+                {"role": "user", "content": f"{df_compare.to_string()}\n\n{user_query}"}
+            ]
+        )
+        st.write(chat_resp.choices[0].message.content)
